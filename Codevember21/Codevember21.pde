@@ -1,106 +1,65 @@
 Skateboard skateboard;
-Tree tree;
+ArrayList<Tree> trees = new ArrayList<Tree>();
 
 void setup()
 {
   size(500,500);
   colorMode(HSB, 100);
   skateboard = new Skateboard();
-  tree = new Tree();
 }
 
 void draw()
 {
-  background(100);
+  background(50, 10, 100);
+ fill(30, 50, 90);
+  rect(0, height * 0.55, width, height/2);
   skateboard.render();
   skateboard.update();
-  tree.render();
-  tree.update();
-}
-
-class Skateboard
-{
-  PVector position;
-  PVector velocity;
-  float w;
-  float h;
-  float skew;
-  float wheelSize;
   
-  Skateboard()
+  //spawn trees
+  if(frameCount % 40 == 0)
   {
-    position = new PVector(width/2, height * 0.75);
-    velocity = new PVector(0, -0.5);
-    w = 200;
-    h = 20;
-    skew = 20;
-    wheelSize = 20;
+    trees.add( new Tree());
   }
   
-  void update()
+  //tree manager
+  for(int i = trees.size() - 1; i >= 0; i--)
   {
-    position.add(velocity);
-    bounce();
-  }
-  
-  void render()
-  {
-    noStroke();
+    Tree t = trees.get(i);
+    t.render();
+    t.update();
     
-    // skateboard wheels
-    fill(0, 20, 50);
-    ellipse(position.x + w * 0.20 - skew, position.y + h, wheelSize, wheelSize); //front wheel
-    ellipse(position.x + w * 0.85 - skew, position.y + h, wheelSize, wheelSize); //back wheel
-    
-    // skateboard board
-    fill(100, 80, 80);
-    quad(position.x, position.y, position.x + w, position.y, position.x + w - skew, position.y + h, position.x - skew, position.y + h);
-  }
-  
-  void bounce()
-  {
-    // bouncing animation
-    if(position.y > width/2 + 5)
+    if(t.isDead())
     {
-      velocity.y *= -1;
-    }
-    else if(position.y < width/2)
-    {
-      velocity.y *= -1;
+      trees.remove(i);
     }
   }
 }
 
-class Tree
+//press any key to TURBO
+void keyPressed()
 {
-  PVector position;
-  float leaves_w, leaves_h;
-  float trunk_w, trunk_h;
-  
-  Tree()
+  for(int i = trees.size() - 1; i >= 0; i--)
   {
-    position = new PVector(width/2, height * 0.5);
-    leaves_w = 40;
-    leaves_h = 60;
-    trunk_w = 20;
-    trunk_h = 50;
+    Tree t = trees.get(i);
+    t.speed = 20;
   }
   
-  void update()
+  skateboard.bounce = 2;
+  skateboard.h = 15;
+  skateboard.skew = 25;
+}
+
+void keyReleased()
+{
+    for(int i = trees.size() - 1; i >= 0; i--)
   {
+    Tree t = trees.get(i);
+    t.speed = 5;
   }
   
-  void render()
-  {
-    //trunk
-    fill(100, 50, 50);
-    rect(position.x, position.y, trunk_w, trunk_h);
-    
-    //leaves
-    fill(20, 50, 50);
-    triangle(position.x + trunk_w/2 - leaves_w/2, position.y,
-             position.x + trunk_w/2 + leaves_w/2, position.y,
-             position.x + trunk_w/2,              position.y - trunk_h - leaves_h);
-    
-  }
+  skateboard.bounce = 5;
+  skateboard.h = 20;
+  skateboard.skew = 20;
+
 }
