@@ -1,11 +1,12 @@
 Skateboard skateboard;
-ArrayList<Tree> trees = new ArrayList<Tree>();
+Tree tree;
 
 void setup()
 {
   size(500,500);
   colorMode(HSB, 100);
   skateboard = new Skateboard();
+  tree = new Tree();
 }
 
 void draw()
@@ -13,6 +14,8 @@ void draw()
   background(100);
   skateboard.render();
   skateboard.update();
+  tree.render();
+  tree.update();
 }
 
 class Skateboard
@@ -26,7 +29,7 @@ class Skateboard
   
   Skateboard()
   {
-    position = new PVector(width/2, height/2);
+    position = new PVector(width/2, height * 0.75);
     velocity = new PVector(0, -0.5);
     w = 200;
     h = 20;
@@ -52,8 +55,6 @@ class Skateboard
     // skateboard board
     fill(100, 80, 80);
     quad(position.x, position.y, position.x + w, position.y, position.x + w - skew, position.y + h, position.x - skew, position.y + h);
-    
-
   }
   
   void bounce()
@@ -72,8 +73,17 @@ class Skateboard
 
 class Tree
 {
+  PVector position;
+  float leaves_w, leaves_h;
+  float trunk_w, trunk_h;
+  
   Tree()
   {
+    position = new PVector(width/2, height * 0.5);
+    leaves_w = 40;
+    leaves_h = 60;
+    trunk_w = 20;
+    trunk_h = 50;
   }
   
   void update()
@@ -82,5 +92,15 @@ class Tree
   
   void render()
   {
+    //trunk
+    fill(100, 50, 50);
+    rect(position.x, position.y, trunk_w, trunk_h);
+    
+    //leaves
+    fill(20, 50, 50);
+    triangle(position.x + trunk_w/2 - leaves_w/2, position.y,
+             position.x + trunk_w/2 + leaves_w/2, position.y,
+             position.x + trunk_w/2,              position.y - trunk_h - leaves_h);
+    
   }
 }
